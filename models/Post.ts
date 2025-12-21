@@ -13,6 +13,8 @@ export interface IPost extends Document {
     | "syllabus"
     | "admission";
   metaDescription: string;
+  tags?: string[];
+  createdAt: Date;
   updatedAt: Date;
 }
 
@@ -35,7 +37,7 @@ const PostSchema: Schema = new Schema(
       ],
       index: true,
     },
-    tags: { type: [String], default: [], index: true }, // <--- NEW FIELD
+    tags: { type: [String], default: [], index: true },
     metaDescription: { type: String, required: true },
   },
   { timestamps: true }

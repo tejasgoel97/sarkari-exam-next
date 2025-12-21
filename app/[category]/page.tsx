@@ -1,5 +1,6 @@
 import dbConnect from "@/lib/mongodb";
 import Post from "@/models/Post";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -128,7 +129,7 @@ export default async function CategoryPage({
             {/* Image Area */}
             <div className="h-48 w-full bg-gray-100 relative overflow-hidden">
               {post.featureImage ? (
-                <img
+                <Image
                   src={post.featureImage}
                   alt={post.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"

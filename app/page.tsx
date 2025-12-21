@@ -1,5 +1,6 @@
 import dbConnect from "@/lib/mongodb";
 import Post from "@/models/Post";
+import Image from "next/image";
 import Link from "next/link";
 
 // 1. Force Dynamic: Ensures the homepage rebuilds whenever you add a new post
@@ -24,7 +25,7 @@ const PostCard = ({ post }: { post: any }) => (
     {/* Image Section */}
     <div className="relative h-40 w-full bg-gray-100 overflow-hidden">
       {post.featureImage ? (
-        <img
+        <Image
           src={post.featureImage}
           alt={post.title}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"

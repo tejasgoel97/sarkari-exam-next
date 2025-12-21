@@ -1,9 +1,10 @@
 import dbConnect from "@/lib/mongodb";
-import Post from "@/models/Post";
+import Post, { IPost } from "@/models/Post";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import Link from "next/link";
 import DOMPurify from "isomorphic-dompurify";
+import Image from "next/image";
 
 interface Props {
   params: { slug: string };
@@ -12,21 +13,23 @@ interface Props {
 // 1. DYNAMIC SEO METADATA
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   await dbConnect();
-  const post = await Post.findOne({ slug: params.slug }).lean();
+  const post = (await Post.findOne({
+    slug: params.slug,
+  }).lean()) as IPost | null;
   if (!post) return { title: "Not Found" };
 
   return {
     title: `${post.title} - Sarkari Exam Info`,
     description: post.metaDescription,
-    keywords: post.tags, // Uses your new tags for SEO keywords
+    keywords: (post as any).tags || [],
     openGraph: {
       title: post.title,
       description: post.metaDescription,
       type: "article",
-      publishedTime: post.createdAt,
-      modifiedTime: post.updatedAt,
+      publishedTime: new Date((post as any).createdAt).toISOString(),
+      modifiedTime: new Date((post as any).updatedAt).toISOString(),
       images: post.featureImage ? [post.featureImage] : [],
-      tags: post.tags,
+      tags: (post as any).tags || [],
     },
     twitter: {
       card: "summary_large_image",
@@ -41,7 +44,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 async function getRelatedPosts(
   currentPostId: any,
   category: string,
-  tags: string[]
+  tags: string[] = []
 ) {
   await dbConnect();
 
@@ -53,13 +56,15 @@ async function getRelatedPosts(
     .select("title slug featureImage category updatedAt")
     .sort({ updatedAt: -1 })
     .limit(6) // Show 6 related posts
-    .lean();
+    .lean() as unknown as IPost[];
 }
 
 // 3. MAIN PAGE COMPONENT
 export default async function PostPage({ params }: Props) {
   await dbConnect();
-  const post = await Post.findOne({ slug: params.slug }).lean();
+  const post = (await Post.findOne({
+    slug: params.slug,
+  }).lean()) as IPost | null;
 
   if (!post) notFound();
 
@@ -78,8 +83,12 @@ export default async function PostPage({ params }: Props) {
     headline: post.title,
     description: post.metaDescription,
     image: post.featureImage ? [post.featureImage] : [],
-    datePublished: post.createdAt,
-    dateModified: post.updatedAt,
+    datePublished: post.createdAt
+      ? new Date(post.createdAt).toISOString()
+      : undefined,
+    dateModified: post.updatedAt
+      ? new Date(post.updatedAt).toISOString()
+      : undefined,
     author: {
       "@type": "Organization",
       name: "Sarkari Exam Info",
@@ -134,7 +143,7 @@ export default async function PostPage({ params }: Props) {
             {/* Feature Image */}
             {post.featureImage && (
               <div className="mb-8 rounded-lg overflow-hidden bg-gray-50 border border-gray-100">
-                <img
+                <Image
                   src={post.featureImage}
                   alt={post.title}
                   className="w-full max-h-[400px] object-contain"
@@ -205,7 +214,7 @@ export default async function PostPage({ params }: Props) {
                     {/* Tiny Thumbnail */}
                     <div className="h-16 w-16 bg-gray-200 rounded-md shrink-0 overflow-hidden">
                       {related.featureImage ? (
-                        <img
+                        <Image
                           src={related.featureImage}
                           alt={related.title}
                           className="h-full w-full object-cover"

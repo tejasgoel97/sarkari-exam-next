@@ -1,5 +1,6 @@
 import dbConnect from "@/lib/mongodb";
 import Post from "@/models/Post";
+import Image from "next/image";
 import Link from "next/link";
 
 // Force dynamic so it reads the search query on every request
@@ -51,7 +52,7 @@ export default async function SearchPage({
               {/* Thumbnail */}
               <div className="h-40 bg-gray-100 relative overflow-hidden">
                 {post.featureImage ? (
-                  <img
+                  <Image
                     src={post.featureImage}
                     alt={post.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform"

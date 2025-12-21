@@ -3,7 +3,7 @@ import Post, { IPost } from "@/models/Post";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import Link from "next/link";
-import DOMPurify from "isomorphic-dompurify";
+import sanitizeHtml from "sanitize-html";
 import Image from "next/image";
 
 interface Props {
@@ -74,8 +74,13 @@ export default async function PostPage({ params }: Props) {
     post.category,
     post.tags || []
   );
-  const cleanHtml = DOMPurify.sanitize(post.contentHtml);
-
+  const cleanHtml = sanitizeHtml(post.contentHtml, {
+    allowedTags: sanitizeHtml.defaults.allowedTags,
+    allowedAttributes: {
+      a: ["href", "target", "rel"],
+      img: ["src", "alt", "title"],
+    },
+  });
   // JSON-LD Structured Data (For Google Rich Snippets)
   const jsonLd = {
     "@context": "https://schema.org",

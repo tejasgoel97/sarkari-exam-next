@@ -2,26 +2,80 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: #f3f4f6; /* Light gray background prevents eye strain */
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+/* Custom Marquee Animation */
+@keyframes marquee {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+.animate-marquee {
+  animation: marquee 20s linear infinite;
+}
+
+
+/* Add this to the bottom of app/globals.css */
+
+@layer components {
+  /* 1. Table Styling - The "Sarkari" Look */
+  .prose table {
+    @apply w-full border-collapse border border-gray-300 my-6 text-sm;
+  }
+  
+  .prose th {
+    @apply bg-blue-50 text-blue-900 border border-gray-300 p-3 font-bold text-left;
+  }
+  
+  .prose td {
+    @apply border border-gray-300 p-3 align-top text-gray-700;
+  }
+
+  .prose tr:nth-child(even) {
+    @apply bg-gray-50; /* Striped rows for better reading */
+  }
+
+  /* 2. Blockquote Styling - The "Update" Box */
+  .prose blockquote {
+    @apply border-l-4 border-blue-600 bg-blue-50 p-4 italic not-italic text-gray-800 rounded-r-lg my-6;
+    quotes: none;
+  }
+
+  /* 3. Accordion (FAQ) Styling */
+  .prose details {
+    @apply border border-gray-200 rounded-lg mb-4 bg-white overflow-hidden;
+  }
+  
+  .prose summary {
+    @apply bg-gray-50 p-4 font-bold cursor-pointer hover:bg-gray-100 transition list-none flex items-center justify-between text-gray-800;
+  }
+  
+  /* Add a custom arrow for summary */
+  .prose summary::after {
+    content: '+';
+    @apply text-blue-600 font-bold text-lg;
+  }
+  
+  .prose details[open] summary::after {
+    content: '-';
+  }
+
+  .prose details[open] p {
+    @apply p-4 border-t border-gray-100 text-gray-600 m-0;
+  }
+
+  /* 4. List Styling */
+  .prose ul {
+    @apply list-disc list-outside ml-5 space-y-2 text-gray-700;
+  }
+  
+  .prose ol {
+    @apply list-decimal list-outside ml-5 space-y-2 text-gray-700;
+  }
+
+  /* 5. Link Styling */
+  .prose a {
+    @apply text-blue-600 font-semibold no-underline hover:underline hover:text-blue-800 break-words;
   }
 }

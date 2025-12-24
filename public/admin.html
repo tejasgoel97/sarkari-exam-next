@@ -1,187 +1,317 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sarkari Admin - Create Post</title>
     <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: #f3f4f6;
-            padding: 20px;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        .container {
-            background: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        h1 { margin-top: 0; color: #1f2937; }
-        .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 5px; font-weight: 600; color: #374151; }
-        input, select, textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #d1d5db;
-            border-radius: 4px;
-            font-size: 16px;
-            box-sizing: border-box; /* Fixes padding issues */
-        }
-        input:focus, textarea:focus { outline: 2px solid #2563eb; border-color: transparent; }
-        .help-text { font-size: 12px; color: #6b7280; margin-top: 4px; }
-        button {
-            background-color: #2563eb;
-            color: white;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 4px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            width: 100%;
-        }
-        button:hover { background-color: #1d4ed8; }
-        button:disabled { background-color: #9ca3af; cursor: not-allowed; }
-        #status {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 4px;
-            display: none;
-        }
-        .success { background-color: #d1fae5; color: #065f46; border: 1px solid #34d399; }
-        .error { background-color: #fee2e2; color: #991b1b; border: 1px solid #f87171; }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        background-color: #f3f4f6;
+        padding: 20px;
+        max-width: 800px;
+        margin: 0 auto;
+      }
+      .container {
+        background: white;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+        margin-top: 0;
+        color: #1f2937;
+      }
+      .form-group {
+        margin-bottom: 20px;
+      }
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 600;
+        color: #374151;
+      }
+      input,
+      select,
+      textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #d1d5db;
+        border-radius: 4px;
+        font-size: 16px;
+        box-sizing: border-box; /* Fixes padding issues */
+      }
+      input:focus,
+      textarea:focus {
+        outline: 2px solid #2563eb;
+        border-color: transparent;
+      }
+      .help-text {
+        font-size: 12px;
+        color: #6b7280;
+        margin-top: 4px;
+      }
+      button {
+        background-color: #2563eb;
+        color: white;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        width: 100%;
+      }
+      button:hover {
+        background-color: #1d4ed8;
+      }
+      button:disabled {
+        background-color: #9ca3af;
+        cursor: not-allowed;
+      }
+      #status {
+        margin-top: 20px;
+        padding: 15px;
+        border-radius: 4px;
+        display: none;
+      }
+      .success {
+        background-color: #d1fae5;
+        color: #065f46;
+        border: 1px solid #34d399;
+      }
+      .error {
+        background-color: #fee2e2;
+        color: #991b1b;
+        border: 1px solid #f87171;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Create New Post</h1>
 
-<div class="container">
-    <h1>Create New Post</h1>
-    
-    <form id="postForm">
+      <form id="postForm">
         <div class="form-group">
-            <label for="title">Post Title (Hindi/English)</label>
-            <input type="text" id="title" name="title" placeholder="e.g. Bihar Police Constable Result 2025" required>
+          <label for="title">Post Title (Hindi/English)</label>
+          <input
+            type="text"
+            id="title"
+            name="title"
+            placeholder="e.g. Bihar Police Constable Result 2025"
+            required
+          />
         </div>
 
         <div class="form-group">
-            <label for="slug">URL Slug (Unique ID)</label>
-            <div style="display: flex; gap: 10px;">
-                <input type="text" id="slug" name="slug" placeholder="e.g. bihar-police-result-2025" required>
-                <button type="button" id="generateSlugBtn" style="width: auto; padding: 10px;">Generate</button>
-            </div>
-            <div class="help-text">Must be in English, lowercase, and use hyphens. No spaces.</div>
+          <label for="slug">URL Slug (Unique ID)</label>
+          <div style="display: flex; gap: 10px">
+            <input
+              type="text"
+              id="slug"
+              name="slug"
+              placeholder="e.g. bihar-police-result-2025"
+              required
+            />
+            <button
+              type="button"
+              id="generateSlugBtn"
+              style="width: auto; padding: 10px"
+            >
+              Generate
+            </button>
+          </div>
+          <div class="help-text">
+            Must be in English, lowercase, and use hyphens. No spaces.
+          </div>
         </div>
 
         <div class="form-group">
-            <label for="category">Category</label>
-            <select id="category" name="category" required>
-                <option value="result">Result</option>
-                <option value="admit-card">Admit Card</option>
-                <option value="latest-jobs">Latest Jobs</option>
-                <option value="answer-key">Answer Key</option>
-                <option value="syllabus">Syllabus</option>
-                <option value="admission">Admission</option>
-            </select>
+          <label for="category">Category</label>
+          <select id="category" name="category" required>
+            <option value="result">Result</option>
+            <option value="admit-card">Admit Card</option>
+            <option value="latest-jobs">Latest Jobs</option>
+            <option value="answer-key">Answer Key</option>
+            <option value="syllabus">Syllabus</option>
+            <option value="admission">Admission</option>
+          </select>
         </div>
+        <div class="form-group">
+          <label for="tags">Tags (Comma separated)</label>
+          <input
+            type="text"
+            id="tags"
+            name="tags"
+            placeholder="e.g. Bihar Police, 10th Pass, Constable"
+            required
+          />
+          <div class="help-text">
+            These help show "Related Posts" automatically.
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="metaDescription">SEO Meta Description</label>
+          <textarea
+            id="metaDescription"
+            name="metaDescription"
+            rows="3"
+            placeholder="Short summary for Google..."
+            required
+          ></textarea>
+        </div>
+
 <div class="form-group">
-    <label for="tags">Tags (Comma separated)</label>
-    <input type="text" id="tags" name="tags" placeholder="e.g. Bihar Police, 10th Pass, Constable" required>
-    <div class="help-text">These help show "Related Posts" automatically.</div>
+  <label>Feature Image</label>
+  <input type="file" id="imageUpload" accept="image/*">
+
+  <div class="help-text">
+    Image will be uploaded using the slug as filename and stored month-wise.
+  </div>
+
+  <div id="imagePreviewWrapper" style="display:none; margin-top:10px;">
+    <img id="imagePreview" style="max-width:100%; border:1px solid #ddd;">
+  </div>
+
+  <label>Image URL</label>
+  <input type="text" id="featureImage" readonly>
 </div>
-        <div class="form-group">
-            <label for="metaDescription">SEO Meta Description</label>
-            <textarea id="metaDescription" name="metaDescription" rows="3" placeholder="Short summary for Google..." required></textarea>
-        </div>
+
 
         <div class="form-group">
-            <label for="featureImage">Feature Image URL (Optional)</label>
-            <input type="url" id="featureImage" name="featureImage" placeholder="https://example.com/image.jpg">
-        </div>
-
-        <div class="form-group">
-            <label for="contentHtml">HTML Content</label>
-            <textarea id="contentHtml" name="contentHtml" rows="10" placeholder="<h2>Overview</h2><p>Write your HTML here...</p>" required></textarea>
-            <div class="help-text">You can paste raw HTML here. Tables, lists, and links are allowed.</div>
+          <label for="contentHtml">HTML Content</label>
+          <textarea
+            id="contentHtml"
+            name="contentHtml"
+            rows="10"
+            placeholder="<h2>Overview</h2><p>Write your HTML here...</p>"
+            required
+          ></textarea>
+          <div class="help-text">
+            You can paste raw HTML here. Tables, lists, and links are allowed.
+          </div>
         </div>
 
         <button type="submit" id="submitBtn">Publish Post</button>
-    </form>
+      </form>
 
-    <div id="status"></div>
-</div>
+      <div id="status"></div>
+    </div>
+    <script>
+const uploadInput = document.getElementById("imageUpload");
+const slugInput = document.getElementById("slug");
+const imagePreview = document.getElementById("imagePreview");
+const previewWrapper = document.getElementById("imagePreviewWrapper");
+const featureImageInput = document.getElementById("featureImage");
 
-<script>
-    const form = document.getElementById('postForm');
-    const statusDiv = document.getElementById('status');
-    const submitBtn = document.getElementById('submitBtn');
+uploadInput.addEventListener("change", async () => {
+  const slug = slugInput.value.trim();
 
-    // Helper: Auto-generate slug from Title
-    document.getElementById('generateSlugBtn').addEventListener('click', () => {
-        const title = document.getElementById('title').value;
-        const slug = title
+  if (!slug) {
+    alert("Please enter the slug before uploading an image.");
+    uploadInput.value = "";
+    return;
+  }
+
+  const file = uploadInput.files[0];
+  if (!file) return;
+
+  const fd = new FormData();
+  fd.append("file", file);
+  fd.append("slug", slug);
+
+  const res = await fetch("/api/upload-image", {
+    method: "POST",
+    body: fd,
+  });
+
+  const data = await res.json();
+
+  if (data.url) {
+    featureImageInput.value = data.url;
+    imagePreview.src = data.url;
+    previewWrapper.style.display = "block";
+    alert("Image uploaded successfully!");
+  } else {
+    alert(data.error || "Image upload failed");
+  }
+});
+
+    </script>
+    <script>
+      const form = document.getElementById("postForm");
+      const statusDiv = document.getElementById("status");
+      const submitBtn = document.getElementById("submitBtn");
+
+      // Helper: Auto-generate slug from Title
+      document
+        .getElementById("generateSlugBtn")
+        .addEventListener("click", () => {
+          const title = document.getElementById("title").value;
+          const slug = title
             .toLowerCase()
-            .replace(/ /g, '-')
-            .replace(/[^\w-]+/g, ''); // Remove non-word chars
-        document.getElementById('slug').value = slug;
-    });
+            .replace(/ /g, "-")
+            .replace(/[^\w-]+/g, ""); // Remove non-word chars
+          document.getElementById("slug").value = slug;
+        });
 
-    // Form Submit Handler
-    form.addEventListener('submit', async (e) => {
+      // Form Submit Handler
+      form.addEventListener("submit", async (e) => {
         e.preventDefault();
-        
+
         // Disable button to prevent double clicks
         submitBtn.disabled = true;
-        submitBtn.textContent = 'Publishing...';
-        statusDiv.style.display = 'none';
+        submitBtn.textContent = "Publishing...";
+        statusDiv.style.display = "none";
 
         // Gather Data
         const formData = {
-            title: document.getElementById('title').value,
-            slug: document.getElementById('slug').value,
-            category: document.getElementById('category').value,
-            metaDescription: document.getElementById('metaDescription').value,
-            featureImage: document.getElementById('featureImage').value,
-            contentHtml: document.getElementById('contentHtml').value,
-            tags: document.getElementById('tags').value.split(',').map(t => t.trim()),
+          title: document.getElementById("title").value,
+          slug: document.getElementById("slug").value,
+          category: document.getElementById("category").value,
+          metaDescription: document.getElementById("metaDescription").value,
+          featureImage: document.getElementById("featureImage").value,
+          contentHtml: document.getElementById("contentHtml").value,
+          tags: document
+            .getElementById("tags")
+            .value.split(",")
+            .map((t) => t.trim()),
         };
 
         try {
-            // Send Data to Next.js API
-            const response = await fetch('/api/posts', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData)
-            });
+          // Send Data to Next.js API
+          const response = await fetch("/api/posts", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formData),
+          });
 
-            const result = await response.json();
+          const result = await response.json();
 
-            statusDiv.style.display = 'block';
-            
-            if (result.success) {
-                // Success State
-                statusDiv.className = 'success';
-                statusDiv.innerHTML = `<strong>Success!</strong> Post published. <a href="/post/${result.data.slug}" target="_blank">View Post</a>`;
-                form.reset(); // Clear form
-            } else {
-                // Error State
-                statusDiv.className = 'error';
-                statusDiv.textContent = `Error: ${result.error}`;
-            }
+          statusDiv.style.display = "block";
 
+          if (result.success) {
+            // Success State
+            statusDiv.className = "success";
+            statusDiv.innerHTML = `<strong>Success!</strong> Post published. <a href="/post/${result.data.slug}" target="_blank">View Post</a>`;
+            form.reset(); // Clear form
+          } else {
+            // Error State
+            statusDiv.className = "error";
+            statusDiv.textContent = `Error: ${result.error}`;
+          }
         } catch (error) {
-            statusDiv.style.display = 'block';
-            statusDiv.className = 'error';
-            statusDiv.textContent = `Network Error: ${error.message}`;
+          statusDiv.style.display = "block";
+          statusDiv.className = "error";
+          statusDiv.textContent = `Network Error: ${error.message}`;
         } finally {
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Publish Post';
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Publish Post";
         }
-    });
-</script>
-
-</body>
+      });
+    </script>
+  </body>
 </html>

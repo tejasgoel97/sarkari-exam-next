@@ -152,6 +152,9 @@ export default async function PostPage({ params }: Props) {
                   src={post.featureImage}
                   alt={post.title}
                   className="w-full max-h-[400px] object-contain"
+                  unoptimized
+                  width={200}
+                  height={400}
                 />
               </div>
             )}
@@ -223,6 +226,9 @@ export default async function PostPage({ params }: Props) {
                           src={related.featureImage}
                           alt={related.title}
                           className="h-full w-full object-cover"
+                          unoptimized
+                          width={400}
+                          height={400}
                         />
                       ) : (
                         <div className="h-full w-full flex items-center justify-center text-xs font-bold text-gray-400">

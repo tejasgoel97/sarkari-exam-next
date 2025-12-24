@@ -28,6 +28,8 @@ const PostCard = ({ post }: { post: any }) => (
         <Image
           src={post.featureImage}
           alt={post.title}
+          fill
+          unoptimized
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
         />
       ) : (

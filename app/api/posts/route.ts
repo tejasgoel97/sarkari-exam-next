@@ -7,7 +7,21 @@ import { revalidatePath } from "next/cache";
 export async function GET(req: NextRequest) {
   await dbConnect();
   const url = new URL(req.url);
-  const category = url.searchParams.get("category");
+  const { searchParams } = new URL(url);
+  const slug = searchParams.get("slug");
+  const category = searchParams.get("category");
+  if (slug) {
+    const post = await Post.findOne({ slug });
+
+    if (!post) {
+      return NextResponse.json(
+        { success: false, error: "Post not found" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({ success: true, data: post });
+  }
   const limit = parseInt(url.searchParams.get("limit") || "10");
 
   const query = category ? { category } : {};
@@ -75,6 +89,64 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(
       { success: false, error: error.message || "Internal Server Error" },
+      { status: 500 }
+    );
+  }
+}
+export async function PUT(request: Request) {
+  try {
+    await dbConnect();
+
+    const body = await request.json();
+    const {
+      slug,
+      title,
+      category,
+      metaDescription,
+      featureImage,
+      contentHtml,
+      tags,
+    } = body;
+    console.log("PUT Request Body:", body);
+    if (!slug) {
+      return NextResponse.json(
+        { success: false, error: "Slug is required to identify the post." },
+        { status: 400 }
+      );
+    }
+
+    // Find post by slug and update it
+    // { new: true } returns the updated document
+    const updatedPost = await Post.findOneAndUpdate(
+      { slug },
+      {
+        title,
+        category,
+        metaDescription,
+        featureImage,
+        contentHtml,
+        tags,
+      },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedPost) {
+      return NextResponse.json(
+        { success: false, error: "Post not found with that slug" },
+        { status: 404 }
+      );
+    }
+    revalidatePath("/");
+    revalidatePath(`/${body.category}`); // Updates the specific category page (e.g., /result)
+    return NextResponse.json({
+      success: true,
+      message: "Post updated successfully",
+      data: updatedPost,
+    });
+  } catch (error: any) {
+    console.error("PUT Error:", error);
+    return NextResponse.json(
+      { success: false, error: error.message || "Failed to update post" },
       { status: 500 }
     );
   }

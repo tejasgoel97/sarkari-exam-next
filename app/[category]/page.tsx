@@ -4,7 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-export const dynamic = "force-dynamic";
+// export const dynamic = "force-dynamic";
+export const dynamic = "force-static";
 
 // 1. Configuration: Colors and Titles for each category
 const categoryConfig: Record<

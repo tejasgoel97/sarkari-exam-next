@@ -4,7 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 
 // 1. Force Dynamic: Ensures the homepage rebuilds whenever you add a new post
-export const dynamic = "force-dynamic";
+// export const dynamic = "force-dynamic";
+export const dynamic = "force-static";
 
 // 2. Data Fetcher: INCREASED LIMIT TO 8 (To show more posts like Sarkari sites)
 async function getCategoryPosts(category: string, limit = 8) {

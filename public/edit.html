@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sarkari Admin - Edit Post</title>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background-color: #f3f4f6;
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* --- Top Navigation / Search Bar --- */
+      .top-bar {
+        background: white;
+        padding: 15px 30px;
+        border-bottom: 1px solid #e5e7eb;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        z-index: 10;
+      }
+      .search-box {
+        display: flex;
+        gap: 10px;
+        flex: 1;
+        max-width: 600px;
+      }
+      
+      /* --- Main Layout: Split Screen --- */
+      .main-wrapper {
+        display: flex;
+        flex: 1;
+        overflow: hidden; /* Prevent body scroll, let panels scroll */
+      }
+
+      /* Left Side: Editor Form */
+      .editor-pane {
+        flex: 1;
+        padding: 30px;
+        overflow-y: auto;
+        background: #f9fafb;
+        border-right: 1px solid #e5e7eb;
+        max-width: 50%;
+      }
+
+      /* Right Side: Live Preview */
+      .preview-pane {
+        flex: 1;
+        padding: 30px;
+        overflow-y: auto;
+        background: white;
+      }
+      
+      /* --- Preview Specific Styles --- */
+      .preview-header {
+        font-size: 12px;
+        text-transform: uppercase;
+        color: #9ca3af;
+        letter-spacing: 1px;
+        margin-bottom: 10px;
+        border-bottom: 2px solid #f3f4f6;
+        padding-bottom: 5px;
+      }
+      /* Simulate your actual site typography here for accurate preview */
+      #livePreviewContent h2 { color: #1f2937; border-bottom: 2px solid #2563eb; padding-bottom: 5px; }
+      #livePreviewContent table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+      #livePreviewContent th, #livePreviewContent td { border: 1px solid #ddd; padding: 8px; }
+
+      /* --- Common Form Styles (Reused) --- */
+      h1 { margin-top: 0; color: #1f2937; font-size: 24px; }
+      .form-group { margin-bottom: 20px; }
+      label { display: block; margin-bottom: 5px; font-weight: 600; color: #374151; }
+      input, select, textarea {
+        width: 100%; padding: 10px; border: 1px solid #d1d5db;
+        border-radius: 4px; font-size: 14px; box-sizing: border-box;
+      }
+      input:focus, textarea:focus { outline: 2px solid #2563eb; border-color: transparent; }
+      .help-text { font-size: 12px; color: #6b7280; margin-top: 4px; }
+      
+      button {
+        background-color: #2563eb; color: white; padding: 10px 20px;
+        border: none; border-radius: 4px; font-weight: bold; cursor: pointer;
+      }
+      button:hover { background-color: #1d4ed8; }
+      button.secondary { background-color: #4b5563; }
+      button:disabled { background-color: #9ca3af; cursor: not-allowed; }
+
+      #status { margin-top: 20px; padding: 15px; border-radius: 4px; display: none; }
+      .success { background-color: #d1fae5; color: #065f46; border: 1px solid #34d399; }
+      .error { background-color: #fee2e2; color: #991b1b; border: 1px solid #f87171; }
+
+      /* Hide editor until loaded */
+      #editorContainer { display: none; }
+    </style>
+  </head>
+  <body>
+
+    <div class="top-bar">
+      <h3>Sarkari Edit</h3>
+      <div class="search-box">
+        <input type="text" id="searchSlug" placeholder="Enter Post Slug (e.g., bihar-police-result-2025)" />
+        <button id="loadBtn" type="button">Load Post</button>
+      </div>
+    </div>
+
+    <div class="main-wrapper">
+      
+      <div class="editor-pane">
+        <div id="loadingMsg" style="display:none; text-align:center; padding:20px;">Loading data...</div>
+        
+        <div id="editorContainer">
+          <h1>Edit Post Details</h1>
+          <form id="editForm">
+            <input type="hidden" id="postId" />
+
+            <div class="form-group">
+              <label for="title">Post Title</label>
+              <input type="text" id="title" name="title" required />
+            </div>
+
+            <div class="form-group">
+              <label for="slug">URL Slug (Cannot be changed)</label>
+              <input type="text" id="slug" name="slug" readonly style="background:#e5e7eb; cursor: not-allowed;" />
+            </div>
+
+            <div class="form-group">
+              <label for="category">Category</label>
+              <select id="category" name="category" required>
+                <option value="result">Result</option>
+                <option value="admit-card">Admit Card</option>
+                <option value="latest-jobs">Latest Jobs</option>
+                <option value="answer-key">Answer Key</option>
+                <option value="syllabus">Syllabus</option>
+                <option value="admission">Admission</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+                <label for="tags">Tags (Comma separated)</label>
+                <input type="text" id="tags" name="tags" required />
+            </div>
+
+            <div class="form-group">
+              <label for="metaDescription">SEO Meta Description</label>
+              <textarea id="metaDescription" name="metaDescription" rows="3" required></textarea>
+            </div>
+
+            <div class="form-group">
+              <label>Feature Image</label>
+              <div style="display:flex; gap:10px; align-items:center; margin-bottom:10px;">
+                <img id="imagePreview" style="width: 60px; height: 60px; object-fit: cover; border-radius: 4px; display:none; border:1px solid #ddd;">
+                <input type="text" id="featureImage" readonly placeholder="Image URL will appear here..." style="flex:1;">
+              </div>
+              <input type="file" id="imageUpload" accept="image/*">
+            </div>
+
+            <div class="form-group">
+              <label for="contentHtml">HTML Content (Edits reflect on right)</label>
+              <textarea
+                id="contentHtml"
+                name="contentHtml"
+                rows="15"
+                placeholder="<h2>Overview</h2><p>Write your HTML here...</p>"
+                required
+                style="font-family: monospace; font-size: 13px;"
+              ></textarea>
+            </div>
+
+            <button type="submit" id="submitBtn">Update Post</button>
+            <div id="status"></div>
+          </form>
+        </div>
+      </div>
+
+      <div class="preview-pane">
+        <div class="preview-header">Live Preview</div>
+        <div id="livePreviewContent">
+            <p style="color:#9ca3af; text-align:center; margin-top:50px;">
+                Load a post to see the preview...
+            </p>
+        </div>
+      </div>
+
+    </div>
+
+    <script>
+      // DOM Elements
+      const searchSlugInput = document.getElementById("searchSlug");
+      const loadBtn = document.getElementById("loadBtn");
+      const editorContainer = document.getElementById("editorContainer");
+      const loadingMsg = document.getElementById("loadingMsg");
+      const form = document.getElementById("editForm");
+      
+      // Fields
+      const titleInput = document.getElementById("title");
+      const slugInput = document.getElementById("slug");
+      const categoryInput = document.getElementById("category");
+      const tagsInput = document.getElementById("tags");
+      const metaInput = document.getElementById("metaDescription");
+      const featureImageInput = document.getElementById("featureImage");
+      const imagePreview = document.getElementById("imagePreview");
+      const contentHtmlInput = document.getElementById("contentHtml");
+      const livePreviewContent = document.getElementById("livePreviewContent");
+
+      // 1. LOAD POST LOGIC
+      loadBtn.addEventListener("click", async () => {
+        const slugToFind = searchSlugInput.value.trim();
+        if (!slugToFind) return alert("Please enter a slug.");
+
+        // UI Reset
+        editorContainer.style.display = "none";
+        loadingMsg.style.display = "block";
+        
+        try {
+          // ASSUMPTION: You have a GET route like /api/posts?slug=your-slug
+          const res = await fetch(`/api/posts?slug=${slugToFind}`);
+          const json = await res.json();
+
+          if (!res.ok || !json.data) {
+             throw new Error(json.error || "Post not found");
+          }
+
+          const post = json.data;
+
+          // Populate Fields
+          titleInput.value = post.title;
+          slugInput.value = post.slug;
+          categoryInput.value = post.category;
+          tagsInput.value = Array.isArray(post.tags) ? post.tags.join(", ") : post.tags;
+          metaInput.value = post.metaDescription;
+          featureImageInput.value = post.featureImage;
+          contentHtmlInput.value = post.contentHtml;
+
+          // Show Image Preview if exists
+          if (post.featureImage) {
+            imagePreview.src = post.featureImage;
+            imagePreview.style.display = "block";
+          }
+
+          // Trigger Live Preview immediately
+          updatePreview(post.contentHtml);
+
+          // Show Editor
+          editorContainer.style.display = "block";
+        } catch (err) {
+          alert("Error loading post: " + err.message);
+        } finally {
+          loadingMsg.style.display = "none";
+        }
+      });
+
+      // 2. LIVE PREVIEW LOGIC
+      function updatePreview(html) {
+        livePreviewContent.innerHTML = html;
+      }
+
+      // Listen for typing in the textarea
+      contentHtmlInput.addEventListener("input", (e) => {
+        updatePreview(e.target.value);
+      });
+
+      // 3. IMAGE UPLOAD LOGIC (Same as Create)
+      const uploadInput = document.getElementById("imageUpload");
+      uploadInput.addEventListener("change", async () => {
+        const slug = slugInput.value.trim();
+        // Since we are editing, slug should already be there
+        if (!slug) return alert("Slug is missing.");
+
+        const file = uploadInput.files[0];
+        if (!file) return;
+
+        const fd = new FormData();
+        fd.append("file", file);
+        fd.append("slug", slug);
+
+        const res = await fetch("/api/upload-image", { method: "POST", body: fd });
+        const data = await res.json();
+
+        if (data.url) {
+            featureImageInput.value = data.url;
+            imagePreview.src = data.url;
+            imagePreview.style.display = "block";
+        } else {
+            alert("Image upload failed");
+        }
+      });
+
+      // 4. UPDATE (PUT) LOGIC
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById("submitBtn");
+        const statusDiv = document.getElementById("status");
+
+        btn.disabled = true;
+        btn.textContent = "Updating...";
+        statusDiv.style.display = "none";
+
+        const formData = {
+            slug: slugInput.value, // We use slug to identify which post to update
+            title: titleInput.value,
+            category: categoryInput.value,
+            metaDescription: metaInput.value,
+            featureImage: featureImageInput.value,
+            contentHtml: contentHtmlInput.value,
+            tags: tagsInput.value.split(",").map((t) => t.trim()),
+        };
+
+        try {
+            // NOTE: Using PUT for updates
+            const response = await fetch("/api/posts", {
+                method: "PUT", 
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(formData),
+            });
+
+            const result = await response.json();
+
+            statusDiv.style.display = "block";
+            if (result.success) {
+                statusDiv.className = "success";
+                statusDiv.innerHTML = `<strong>Updated!</strong> <a href="/post/${slugInput.value}" target="_blank">View Post</a>`;
+            } else {
+                statusDiv.className = "error";
+                statusDiv.textContent = result.error || "Update failed";
+            }
+        } catch (error) {
+            statusDiv.style.display = "block";
+            statusDiv.className = "error";
+            statusDiv.textContent = error.message;
+        } finally {
+            btn.disabled = false;
+            btn.textContent = "Update Post";
+        }
+      });
+    </script>
+  </body>
+</html>

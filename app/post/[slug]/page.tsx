@@ -3,7 +3,6 @@ import Post, { IPost } from "@/models/Post";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import Link from "next/link";
-import sanitizeHtml from "sanitize-html";
 import Image from "next/image";
 
 interface Props {
@@ -22,6 +21,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: `${post.title} - Sarkari Exam Info`,
     description: post.metaDescription,
     keywords: (post as any).tags || [],
+    alternates: {
+      canonical: `https://sarkariexaminfo.com/post/${params.slug}`,
+    },
     openGraph: {
       title: post.title,
       description: post.metaDescription,
@@ -74,32 +76,47 @@ export default async function PostPage({ params }: Props) {
     post.category,
     post.tags || []
   );
-  const cleanHtml = sanitizeHtml(post.contentHtml, {
-    allowedTags: sanitizeHtml.defaults.allowedTags,
-    allowedAttributes: {
-      a: ["href", "target", "rel"],
-      img: ["src", "alt", "title"],
-    },
-  });
   // JSON-LD Structured Data (For Google Rich Snippets)
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "NewsArticle",
-    headline: post.title,
-    description: post.metaDescription,
-    image: post.featureImage ? [post.featureImage] : [],
-    datePublished: post.createdAt
-      ? new Date(post.createdAt).toISOString()
-      : undefined,
-    dateModified: post.updatedAt
-      ? new Date(post.updatedAt).toISOString()
-      : undefined,
-    author: {
-      "@type": "Organization",
-      name: "Sarkari Exam Info",
-    },
+    "@graph": [
+      {
+        "@type": "NewsArticle",
+        headline: post.title,
+        description: post.metaDescription,
+        image: post.featureImage ? [post.featureImage] : [],
+        datePublished: post.createdAt,
+        dateModified: post.updatedAt,
+        author: {
+          "@type": "Organization",
+          name: "Sarkari Exam Info", // Changed to match Brand Name usually better for news
+        },
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          {
+            "@type": "ListItem",
+            position: 1,
+            name: "Home",
+            item: "https://sarkariexaminfo.com",
+          },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: post.category,
+            item: `https://sarkariexaminfo.com/${post.category}`,
+          },
+          {
+            "@type": "ListItem",
+            position: 3,
+            name: post.title,
+            item: `https://sarkariexaminfo.com/post/${post.slug}`,
+          },
+        ],
+      },
+    ],
   };
-
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       {/* Inject Schema for Google */}
@@ -161,8 +178,8 @@ export default async function PostPage({ params }: Props) {
 
             {/* HTML Content (Typography Plugin Active) */}
             <div
-              className="prose prose-lg max-w-none"
-              dangerouslySetInnerHTML={{ __html: cleanHtml }}
+              className=" post-content"
+              dangerouslySetInnerHTML={{ __html: post.contentHtml }}
             />
 
             {/* Social Share Call to Action */}

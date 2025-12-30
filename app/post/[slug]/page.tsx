@@ -18,11 +18,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!post) return { title: "Not Found" };
 
   return {
-    title: `${post.title} - Sarkari Exam Info`,
+    title: `${post.title} - Sarkari Dekho`,
     description: post.metaDescription,
     keywords: (post as any).tags || [],
     alternates: {
-      canonical: `https://sarkariexaminfo.com/post/${params.slug}`,
+      canonical: `${process.env.NEXT_PUBLIC_SITE_URL}/post/${params.slug}`,
     },
     openGraph: {
       title: post.title,
@@ -89,7 +89,7 @@ export default async function PostPage({ params }: Props) {
         dateModified: post.updatedAt,
         author: {
           "@type": "Organization",
-          name: "Sarkari Exam Info", // Changed to match Brand Name usually better for news
+          name: "Sarkari Dekho", // Changed to match Brand Name usually better for news
         },
       },
       {
@@ -99,19 +99,19 @@ export default async function PostPage({ params }: Props) {
             "@type": "ListItem",
             position: 1,
             name: "Home",
-            item: "https://sarkariexaminfo.com",
+            item: `${process.env.NEXT_PUBLIC_SITE_URL}`,
           },
           {
             "@type": "ListItem",
             position: 2,
             name: post.category,
-            item: `https://sarkariexaminfo.com/${post.category}`,
+            item: `${process.env.NEXT_PUBLIC_SITE_URL}/${post.category}`,
           },
           {
             "@type": "ListItem",
             position: 3,
             name: post.title,
-            item: `https://sarkariexaminfo.com/post/${post.slug}`,
+            item: `${process.env.NEXT_PUBLIC_SITE_URL}/post/${post.slug}`,
           },
         ],
       },

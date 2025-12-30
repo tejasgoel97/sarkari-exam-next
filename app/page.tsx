@@ -213,7 +213,7 @@ export default async function Home() {
           <div className="animate-marquee inline-block text-sm font-medium">
             {jobs[0]
               ? `नई भर्ती: ${jobs[0].title}`
-              : "Sarkari Exam Info में आपका स्वागत है"}
+              : "Sarkari Dekho में आपका स्वागत है"}
             <span className="mx-4 text-gray-400">|</span>
             {results[0] ? `रिजल्ट: ${results[0].title}` : ""}
             <span className="mx-4 text-gray-400">|</span>
